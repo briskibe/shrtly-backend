@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ShopifyService {
     // Step 1: Redirect user to Shopify for authorization
-    String getAuthorizationUrl(String shopDomain);
+    String getAuthorizationUrl(String shopDomain, String state);
 
     String exchangeCodeForToken(String shopDomain, String code);
 

@@ -20,7 +20,9 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     // List of URLs to exclude from token validation
     private static final List<String> EXCLUDED_URLS = Arrays.asList(
             "/api/public/health",
-            "/api/user/register"
+            "/api/user/register",
+            "/api/shopify/auth",
+            "/api/shopify/callback"
     );
 
     @Override

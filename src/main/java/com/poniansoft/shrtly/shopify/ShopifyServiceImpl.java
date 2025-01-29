@@ -25,16 +25,20 @@ public class ShopifyServiceImpl implements ShopifyService {
 
     @Value("${shopify.redirect-uri}")
     private String redirectUri;
+    String scopes = "read_products,write_products";
 
     private final RestTemplate restTemplate = new RestTemplate();
 
     // Step 1: Redirect user to Shopify for authorization
     @Override
-    public String getAuthorizationUrl(String shopDomain) {
-        return String.format(
-                "https://%s/admin/oauth/authorize?client_id=%s&scope=read_products,read_orders&redirect_uri=%s",
-                shopDomain, apiKey, redirectUri
+    public String getAuthorizationUrl(String shopDomain, String state) {
+        // TODO: check if the shop domain is valid
+        // TODO: check if already stored in the database
+        String shopifyUrl = String.format(
+                "https://%s/admin/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%s",
+                shopDomain, apiKey, scopes, redirectUri,state
         );
+        return shopifyUrl;
     }
 
     // Step 2: Exchange authorization code for access token
