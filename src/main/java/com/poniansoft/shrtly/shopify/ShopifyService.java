@@ -1,6 +1,9 @@
 package com.poniansoft.shrtly.shopify;
 
+import com.poniansoft.shrtly.shopify.model.ShopifyProduct;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface ShopifyService {
     // Step 1: Redirect user to Shopify for authorization
@@ -9,5 +12,5 @@ public interface ShopifyService {
     String exchangeCodeForToken(String shopDomain, String code);
 
     // Step 3: Fetch products from Shopify
-    ResponseEntity<String> fetchProducts(String shopDomain, String accessToken);
+    List<ShopifyProduct> fetchProducts(String shopDomain, String accessToken, int limit);
 }

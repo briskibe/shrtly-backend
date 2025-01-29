@@ -1,5 +1,6 @@
 package com.poniansoft.shrtly.shopify;
 
+import com.poniansoft.shrtly.shopify.model.ShopifyProduct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +13,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -62,13 +65,33 @@ public class ShopifyServiceImpl implements ShopifyService {
 
     // Step 3: Fetch products from Shopify
     @Override
-    public ResponseEntity<String> fetchProducts(String shopDomain, String accessToken) {
-        String url = String.format("https://%s/admin/api/2023-10/products.json", shopDomain);
+    public List<ShopifyProduct> fetchProducts(String shopDomain, String accessToken, int limit) {
+        String url = String.format("https://%s/admin/api/2023-10/products.json?limit=%s&status=active", shopDomain, limit);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Shopify-Access-Token", accessToken);
 
+
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+
+        List<Map<String, Object>> productsData = (List<Map<String, Object>>) response.getBody().get("products");
+
+        return productsData.stream()
+                .map(productData -> mapToProduct(productData, shopDomain))
+                .collect(Collectors.toList());
+    }
+
+    private ShopifyProduct mapToProduct(Map<String, Object> data, String shopDomain) {
+        ShopifyProduct product = new ShopifyProduct();
+        product.setExternalId((Long) data.get("id"));
+        product.setTitle((String) data.get("title"));
+
+        // Construct Storefront URL using handle
+        String handle = (String) data.get("handle");
+        String productUrl = String.format("https://%s/products/%s", shopDomain, handle);
+        product.setUrl(productUrl);
+
+        return product;
     }
 }

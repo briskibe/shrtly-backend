@@ -42,6 +42,12 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             return;
         }
 
+        // Exclude all non-API endpoints (short links, dashboard, etc.)
+        if (!requestUri.startsWith("/api/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String idToken = request.getHeader("Authorization");
 
         if (idToken != null && idToken.startsWith("Bearer ")) {

@@ -42,7 +42,7 @@ public class Product {
     private List<ShortLink> shortLinks;
 
     @Column(name = "product_id", nullable = false, length = 255)
-    private String productId; // Product ID from Shopify/WooCommerce
+    private Long productId; // Product ID from Shopify/WooCommerce
 
     @Column(name = "product_name", nullable = false, length = 255)
     private String productName;
