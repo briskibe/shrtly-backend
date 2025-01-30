@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
         SELECT new com.poniansoft.shrtly.product.model.ProductShortLink(
@@ -21,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     """)
     Page<ProductShortLink> findProductsWithShortLinksAndClicks(@Param("storeId") Long storeId, Pageable pageable);
 
+    @Query("SELECT p.productId FROM Product p where p.store.id = :storeId")
+    List<Long> findAllProductIds(@Param("storeId") Long storeId);
 }

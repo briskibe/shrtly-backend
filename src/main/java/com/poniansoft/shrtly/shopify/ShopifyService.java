@@ -1,7 +1,7 @@
 package com.poniansoft.shrtly.shopify;
 
 import com.poniansoft.shrtly.shopify.model.ShopifyProduct;
-import org.springframework.http.ResponseEntity;
+import com.poniansoft.shrtly.store.Store;
 
 import java.util.List;
 
@@ -13,4 +13,6 @@ public interface ShopifyService {
 
     // Step 3: Fetch products from Shopify
     List<ShopifyProduct> fetchProducts(String shopDomain, String accessToken, int limit);
+
+    List<ShopifyProduct> syncAllActiveProducts(Store store);
 }
