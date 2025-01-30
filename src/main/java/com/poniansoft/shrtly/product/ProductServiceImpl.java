@@ -1,7 +1,12 @@
 package com.poniansoft.shrtly.product;
 
+import com.poniansoft.shrtly.product.model.ProductShortLink;
 import com.poniansoft.shrtly.shopify.model.ShopifyProduct;
 import com.poniansoft.shrtly.store.Store;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,5 +35,11 @@ public class ProductServiceImpl implements ProductService {
         }).collect(Collectors.toList());
 
         return productRepository.saveAll(products);
+    }
+
+    @Override
+    public Page<ProductShortLink> getProductsWithShortLinks(Long storeId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "totalClicks"));
+        return productRepository.findProductsWithShortLinksAndClicks(storeId, pageable);
     }
 }

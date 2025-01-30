@@ -50,7 +50,7 @@ public class ShopifyController extends BaseController {
         String accessToken = shopifyService.exchangeCodeForToken(shop, code);
         User currentUser = userService.getUserByExternalId(state);
 
-        Store store = storeService.addStore(accessToken, "shopify", shop, currentUser, shop);
+        Store store = storeService.addStore(accessToken, "shopify", shop.replace(".myshopify.com", ""), currentUser, shop);
 
         // Build redirect URI for the frontend
         String redirectUrl = String.format("http://localhost:4200/shopify/auth");

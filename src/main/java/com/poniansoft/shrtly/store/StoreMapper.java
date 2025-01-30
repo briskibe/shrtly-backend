@@ -13,6 +13,7 @@ public class StoreMapper {
         storeModel.setPlatform(store.getPlatform());
         storeModel.setStoreName(store.getStoreName());
         storeModel.setStoreUrl(store.getStoreUrl());
+        storeModel.setUpdatedAt(store.getUpdatedAt());
         return storeModel;
     }
 }
