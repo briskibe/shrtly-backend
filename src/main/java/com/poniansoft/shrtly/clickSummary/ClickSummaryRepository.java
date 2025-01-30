@@ -1,5 +1,8 @@
 package com.poniansoft.shrtly.clickSummary;
 
+import com.poniansoft.shrtly.analytics.model.ClickAnalyticsDTO;
+import com.poniansoft.shrtly.analytics.model.ClicksPerDay;
+import com.poniansoft.shrtly.analytics.model.TopShortLinks;
 import com.poniansoft.shrtly.shortlink.ShortLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -7,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface ClickSummaryRepository extends JpaRepository<ClickSummary, Long> {
     @Modifying
@@ -14,4 +18,31 @@ public interface ClickSummaryRepository extends JpaRepository<ClickSummary, Long
     void incrementClickCount(@Param("shortLink") ShortLink shortLink, @Param("date") LocalDate date);
 
     boolean existsByShortLinkAndDate(ShortLink shortLink, LocalDate date);
+
+    @Query("""
+        SELECT new com.poniansoft.shrtly.analytics.model.ClicksPerDay(
+            c.date, SUM(c.clickCount))
+        FROM ClickSummary c
+        left join c.shortLink sl
+        left join sl.product p
+        left join p.store s
+        WHERE s.id = :storeId and c.date >= :startDate
+        GROUP BY c.date
+        ORDER BY c.date ASC
+    """)
+    List<ClicksPerDay> findClicksOverTime(@Param("startDate") LocalDate startDate, @Param("storeId") Long storeId);
+
+    @Query("""
+        SELECT new com.poniansoft.shrtly.analytics.model.TopShortLinks(
+            sl.shortCode, SUM(c.clickCount))
+        FROM ShortLink sl
+        left join sl.product p
+        left join p.store s
+        JOIN ClickSummary c ON sl.id = c.shortLink.id
+        where s.id = :storeId
+        GROUP BY sl.shortCode
+        ORDER BY SUM(c.clickCount) DESC
+        LIMIT 5
+    """)
+    List<TopShortLinks> findTopShortLinks(@Param("storeId") Long storeId);
 }
