@@ -21,9 +21,13 @@ public class ShortLinkController {
     }
 
     // Short link redirect handler (e.g., https://shrtlnk.shop/abc123)
-    @GetMapping("/{shortCode}")
-    public ResponseEntity<Void> handleShortLink(@PathVariable String shortCode, HttpServletRequest request) {
-        ShortLink shortLink = shortLinkService.findByShortCode(shortCode);
+    @GetMapping("{shortLinkSlug}/{shortCode}")
+    public ResponseEntity<Void> handleShortLink(@PathVariable String shortLinkSlug, @PathVariable String shortCode, HttpServletRequest request) {
+        if (shortLinkSlug == null || shortCode == null || shortLinkSlug.equals("api")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        ShortLink shortLink = shortLinkService.findByShortCode(shortCode, shortLinkSlug);
         if (shortLink == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

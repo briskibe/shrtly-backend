@@ -25,7 +25,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
     @Override
     public ClickAnalyticsDTO getAnalytics(Long storeId) {
-        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(30);
         List<ClicksPerDay> clicksOverTime = clickSummaryRepository.findClicksOverTime(sevenDaysAgo, storeId);
         List<TopShortLinks> topShortLinks = clickSummaryRepository.findTopShortLinks(storeId);
         List<ReferrerStats> referrerStats = clickRepository.findReferrerStats(storeId);

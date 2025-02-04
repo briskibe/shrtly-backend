@@ -25,6 +25,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
             ShortLink shortLink = new ShortLink();
             shortLink.setProduct(product);
             shortLink.setUser(user);
+            shortLink.setSlug(product.getStore().getStoreName());
             String shortCode = generateShortCode(product.getProductId());
             shortLink.setShortCode(shortCode);
             shortLink.setLongUrl(product.getProductUrl());
@@ -39,7 +40,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
         return Base62Util.encode(productId); // Converts ID to a short, readable string
     }
 
-    public ShortLink findByShortCode(String shortCode) {
-        return shortLinkRepository.findByShortCode(shortCode);
+    public ShortLink findByShortCode(String shortCode, String slug) {
+        return shortLinkRepository.findByShortCodeAndSlug(shortCode, slug);
     }
 }

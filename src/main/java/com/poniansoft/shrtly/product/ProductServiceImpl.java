@@ -2,6 +2,8 @@ package com.poniansoft.shrtly.product;
 
 import com.poniansoft.shrtly.product.model.ProductShortLink;
 import com.poniansoft.shrtly.shopify.model.ShopifyProduct;
+import com.poniansoft.shrtly.shortlink.ShortLink;
+import com.poniansoft.shrtly.shortlink.ShortLinkRepository;
 import com.poniansoft.shrtly.store.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,9 +19,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final ShortLinkRepository shortLinkRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ShortLinkRepository shortLinkRepository) {
         this.productRepository = productRepository;
+        this.shortLinkRepository = shortLinkRepository;
     }
 
     @Override
@@ -41,5 +45,33 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductShortLink> getProductsWithShortLinks(Long storeId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "totalClicks"));
         return productRepository.findProductsWithShortLinksAndClicks(storeId, pageable);
+    }
+
+    @Override
+    public ProductShortLink getProductWithShortLinksAndClicksByProductId(Long productId) {
+        return productRepository.findProductWithShortLinksAndClicksByProductId(productId);
+    }
+
+
+    @Override
+    @Transactional
+    public void updateStoreSlug(Long storeId, String slug) {
+        shortLinkRepository.updateSlugInStore(slug, storeId);
+    }
+
+    @Override
+    @Transactional
+    public void updateProductSlug(Long product, String slug, String shortLink) {
+        ShortLink sl = shortLinkRepository.findByProductId(product);
+        if (sl == null)
+            return;
+
+        if (slug != null) {
+            sl.setSlug(slug);
+        }
+
+        if (shortLink != null) {
+            sl.setShortCode(shortLink);
+        }
     }
 }

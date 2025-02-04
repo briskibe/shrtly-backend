@@ -21,7 +21,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "short_links")
+@Table(name = "short_links", indexes = {
+        @jakarta.persistence.Index(name = "idx_short_links_user_id", columnList = "user_id"),
+        @jakarta.persistence.Index(name = "idx_short_links_product_id", columnList = "product_id")
+})
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class ShortLink {
@@ -41,6 +44,9 @@ public class ShortLink {
 
     @Column(name = "short_code", nullable = false, length = 50)
     private String shortCode;
+
+    @Column(name = "slug", nullable = false, length = 50)
+    private String slug;
 
     @Column(name = "long_url", nullable = false, columnDefinition = "TEXT")
     private String longUrl;

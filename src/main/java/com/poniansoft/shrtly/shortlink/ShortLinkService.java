@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ShortLinkService {
     void createShortLinksFromProducts(List<Product> productList, User user);
-    ShortLink findByShortCode(String shortCode);
+    ShortLink findByShortCode(String shortCode, String slug);
 }

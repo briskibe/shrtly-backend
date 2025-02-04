@@ -14,10 +14,10 @@ import java.util.List;
 
 public interface ClickSummaryRepository extends JpaRepository<ClickSummary, Long> {
     @Modifying
-    @Query("UPDATE ClickSummary c SET c.clickCount = c.clickCount + 1 WHERE c.shortLink = :shortLink AND c.date = :date")
-    void incrementClickCount(@Param("shortLink") ShortLink shortLink, @Param("date") LocalDate date);
+    @Query("UPDATE ClickSummary c SET c.clickCount = c.clickCount + 1 WHERE c.shortLink = :shortLink AND c.date = :date and c.slug = :slug and c.shortCode = :shortCode")
+    void incrementClickCount(@Param("shortLink") ShortLink shortLink, @Param("date") LocalDate date, @Param("slug") String slug, @Param("shortCode") String shortCode);
 
-    boolean existsByShortLinkAndDate(ShortLink shortLink, LocalDate date);
+    boolean existsByShortLinkAndDateAndSlugAndShortCode(ShortLink shortLink, LocalDate date, String slug, String shortCode);
 
     @Query("""
         SELECT new com.poniansoft.shrtly.analytics.model.ClicksPerDay(
@@ -34,13 +34,13 @@ public interface ClickSummaryRepository extends JpaRepository<ClickSummary, Long
 
     @Query("""
         SELECT new com.poniansoft.shrtly.analytics.model.TopShortLinks(
-            sl.shortCode, SUM(c.clickCount))
+            concat(c.slug, '/', c.shortCode), SUM(c.clickCount))
         FROM ShortLink sl
         left join sl.product p
         left join p.store s
         JOIN ClickSummary c ON sl.id = c.shortLink.id
         where s.id = :storeId
-        GROUP BY sl.shortCode
+        GROUP BY c.slug, c.shortCode
         ORDER BY SUM(c.clickCount) DESC
         LIMIT 5
     """)

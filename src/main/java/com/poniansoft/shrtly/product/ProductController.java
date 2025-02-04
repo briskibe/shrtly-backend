@@ -2,6 +2,8 @@ package com.poniansoft.shrtly.product;
 
 import com.poniansoft.shrtly.base.BaseController;
 import com.poniansoft.shrtly.product.model.ProductShortLink;
+import com.poniansoft.shrtly.product.model.UpdateProductSlug;
+import com.poniansoft.shrtly.product.model.UpdateSlugRequest;
 import com.poniansoft.shrtly.store.Store;
 import com.poniansoft.shrtly.store.StoreService;
 import com.poniansoft.shrtly.user.User;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,5 +47,37 @@ public class ProductController extends BaseController {
 
         Page<ProductShortLink> productPage = productService.getProductsWithShortLinks(storeId, page, size);
         return ResponseEntity.ok(productPage);
+    }
+
+    @PostMapping("/slugUpdate")
+    public ResponseEntity<Void> updateProductsSlug(
+            @PathVariable Long storeId,
+            @RequestBody UpdateSlugRequest updateSlugRequest,
+            HttpServletRequest request) {
+        User currentUser = getCurrentUser(request);
+        Store store = storeService.getStoreById(storeId);
+        if (!store.getUser().getId().equals(currentUser.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+
+        productService.updateStoreSlug(storeId, updateSlugRequest.getSlug());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{productId}/slugUpdate")
+    public ResponseEntity<ProductShortLink> updateProductSlug(
+            @PathVariable Long storeId,
+            @PathVariable Long productId,
+            @RequestBody UpdateProductSlug updateSlugRequest,
+            HttpServletRequest request) {
+        User currentUser = getCurrentUser(request);
+        Store store = storeService.getStoreById(storeId);
+        if (!store.getUser().getId().equals(currentUser.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+
+        productService.updateProductSlug(productId, updateSlugRequest.getSlug(), updateSlugRequest.getShortLink());
+        ProductShortLink retval = productService.getProductWithShortLinksAndClicksByProductId(productId);
+        return ResponseEntity.ok(retval);
     }
 }

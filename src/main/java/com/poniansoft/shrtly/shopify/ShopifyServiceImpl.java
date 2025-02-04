@@ -104,6 +104,8 @@ public class ShopifyServiceImpl implements ShopifyService {
         boolean hasNextPage = true;
         String nextPageUrl = endpoint;
 
+        Set<Long> existingProductIds = new HashSet<>(productRepository.findAllProductIds(store.getId()));
+
         while (hasNextPage) {
             try {
                 // Make API call to fetch products
@@ -125,6 +127,10 @@ public class ShopifyServiceImpl implements ShopifyService {
                     Long productId = (Long) productData.get("id");
                     String productTitle = (String) productData.get("title");
                     String productHandle = (String) productData.get("handle");
+
+                    if (existingProductIds.contains(productId)) {
+                        continue;
+                    }
 
                     allProducts.add(new ShopifyProduct(productId, productTitle, productHandle));
                 }

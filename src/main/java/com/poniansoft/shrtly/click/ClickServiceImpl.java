@@ -35,11 +35,13 @@ public class ClickServiceImpl implements ClickService {
         clickRepository.save(click);
 
         // 2️⃣ Update daily click count (long-term)
-        if (clickSummaryRepository.existsByShortLinkAndDate(shortLink, today)) {
-            clickSummaryRepository.incrementClickCount(shortLink, today);
+        if (clickSummaryRepository.existsByShortLinkAndDateAndSlugAndShortCode(shortLink, today, shortLink.getSlug(), shortLink.getShortCode())) {
+            clickSummaryRepository.incrementClickCount(shortLink, today, shortLink.getSlug(), shortLink.getShortCode());
         } else {
             ClickSummary summary = new ClickSummary();
             summary.setShortLink(shortLink);
+            summary.setSlug(shortLink.getSlug());
+            summary.setShortCode(shortLink.getShortCode());
             summary.setDate(today);
             summary.setClickCount(1);
             clickSummaryRepository.save(summary);

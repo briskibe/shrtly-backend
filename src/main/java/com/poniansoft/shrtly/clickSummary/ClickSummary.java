@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -15,7 +16,9 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "click_summary")
+@Table(name = "click_summary", indexes = {
+        @Index(name = "idx_click_summary_short_link_id", columnList = "short_link_id")
+})
 @Data
 public class ClickSummary {
     @Id
@@ -26,6 +29,12 @@ public class ClickSummary {
     @ManyToOne
     @JoinColumn(name = "short_link_id", nullable = false)
     private ShortLink shortLink;
+
+    @Column(name = "short_code", nullable = false, length = 50)
+    private String shortCode;
+
+    @Column(name = "slug", nullable = false, length = 50)
+    private String slug;
 
     @Column(nullable = false)
     private LocalDate date;

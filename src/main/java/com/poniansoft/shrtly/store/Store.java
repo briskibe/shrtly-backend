@@ -24,7 +24,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "stores")
+@Table(name = "stores", indexes = {
+        @jakarta.persistence.Index(name = "idx_stores_user_id", columnList = "user_id")
+})
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class Store {
