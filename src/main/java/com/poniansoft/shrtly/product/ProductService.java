@@ -1,5 +1,6 @@
 package com.poniansoft.shrtly.product;
 
+import com.poniansoft.shrtly.product.model.ProductDetailsDTO;
 import com.poniansoft.shrtly.product.model.ProductShortLink;
 import com.poniansoft.shrtly.shopify.model.ShopifyProduct;
 import com.poniansoft.shrtly.store.Store;
@@ -13,4 +14,5 @@ public interface ProductService {
     ProductShortLink getProductWithShortLinksAndClicksByProductId(Long productId);
     void updateStoreSlug(Long storeId, String slug);
     void updateProductSlug(Long product, String slug, String shortLink);
+    ProductDetailsDTO getProductDetails(Long productId, Long storeId);
 }

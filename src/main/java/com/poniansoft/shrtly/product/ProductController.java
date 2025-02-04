@@ -1,6 +1,7 @@
 package com.poniansoft.shrtly.product;
 
 import com.poniansoft.shrtly.base.BaseController;
+import com.poniansoft.shrtly.product.model.ProductDetailsDTO;
 import com.poniansoft.shrtly.product.model.ProductShortLink;
 import com.poniansoft.shrtly.product.model.UpdateProductSlug;
 import com.poniansoft.shrtly.product.model.UpdateSlugRequest;
@@ -79,5 +80,20 @@ public class ProductController extends BaseController {
         productService.updateProductSlug(productId, updateSlugRequest.getSlug(), updateSlugRequest.getShortLink());
         ProductShortLink retval = productService.getProductWithShortLinksAndClicksByProductId(productId);
         return ResponseEntity.ok(retval);
+    }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDetailsDTO> getProductDetails(@PathVariable Long storeId, @PathVariable Long productId, HttpServletRequest request) {
+        User currentUser = getCurrentUser(request);
+        Store store = storeService.getStoreById(storeId);
+        if (!store.getUser().getId().equals(currentUser.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+
+        ProductDetailsDTO productDetails = productService.getProductDetails(productId, store.getId());
+        if (productDetails == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productDetails);
     }
 }

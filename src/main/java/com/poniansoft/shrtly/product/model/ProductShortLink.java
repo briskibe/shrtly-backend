@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductShortLink {
     private Long productId;
+    private String productImageUrl;
     private String productName;
     private String originalUrl;
     private String slug;
@@ -16,9 +17,10 @@ public class ProductShortLink {
     private int totalClicks;
 
     // Constructor matching the query exactly
-    public ProductShortLink(Long productId, String productName, String originalUrl, String slug,
+    public ProductShortLink(Long productId, String productImageUrl, String productName, String originalUrl, String slug,
                             String shortUrl, Long totalClicks) {
         this.productId = productId;
+        this.productImageUrl = productImageUrl;
         this.productName = productName;
         this.originalUrl = originalUrl;
         this.slug = slug;

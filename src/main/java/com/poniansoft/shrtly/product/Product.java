@@ -43,6 +43,9 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
     private List<ShortLink> shortLinks;
 
+    @Column(name = "product_image_url", columnDefinition = "TEXT")
+    private String productImageUrl;
+
     @Column(name = "product_id", nullable = false, length = 255)
     private Long productId; // Product ID from Shopify/WooCommerce
 

@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
         SELECT new com.poniansoft.shrtly.product.model.ProductShortLink(
-            p.id, p.productName, p.productUrl, sl.slug, sl.shortCode,
+            p.id, p.productImageUrl, p.productName, p.productUrl, sl.slug, sl.shortCode,
             COALESCE(SUM(c.clickCount), 0) as totalClicks)
         FROM Product p
         LEFT JOIN ShortLink sl ON p.id = sl.product.id
@@ -25,7 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("""
         SELECT new com.poniansoft.shrtly.product.model.ProductShortLink(
-            p.id, p.productName, p.productUrl, sl.slug, sl.shortCode,
+            p.id, p.productImageUrl, p.productName, p.productUrl, sl.slug, sl.shortCode,
             COALESCE(SUM(c.clickCount), 0) as totalClicks)
         FROM Product p
         LEFT JOIN ShortLink sl ON p.id = sl.product.id

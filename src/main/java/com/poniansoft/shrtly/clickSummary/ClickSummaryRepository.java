@@ -45,4 +45,7 @@ public interface ClickSummaryRepository extends JpaRepository<ClickSummary, Long
         LIMIT 5
     """)
     List<TopShortLinks> findTopShortLinks(@Param("storeId") Long storeId);
+
+    @Query("select cs from ClickSummary cs left join cs.shortLink sl left join sl.product p where p.id = :productId")
+    List<ClickSummary> findByProductId(Long productId);
 }

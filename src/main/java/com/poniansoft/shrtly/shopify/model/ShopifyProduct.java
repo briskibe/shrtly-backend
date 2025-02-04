@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class ShopifyProduct {
     private Long externalId;
     private String title;
+    private String imageUrl;
     private String url;
 }

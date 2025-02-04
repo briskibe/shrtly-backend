@@ -124,15 +124,16 @@ public class ShopifyServiceImpl implements ShopifyService {
 
                 // Convert API response to ShopifyProduct objects
                 for (Map<String, Object> productData : products) {
-                    Long productId = (Long) productData.get("id");
-                    String productTitle = (String) productData.get("title");
-                    String productHandle = (String) productData.get("handle");
+                    Long productId = ((Number) productData.get("id")).longValue();  // Cast to long
 
+                    // Skip products that already exist
                     if (existingProductIds.contains(productId)) {
                         continue;
                     }
 
-                    allProducts.add(new ShopifyProduct(productId, productTitle, productHandle));
+                    // Map product details including image URL
+                    ShopifyProduct newProduct = mapToProduct(productData, store.getStoreUrl());
+                    allProducts.add(newProduct);
                 }
 
                 // Check for next page in response headers
@@ -168,7 +169,7 @@ public class ShopifyServiceImpl implements ShopifyService {
 
     private ShopifyProduct mapToProduct(Map<String, Object> data, String shopDomain) {
         ShopifyProduct product = new ShopifyProduct();
-        product.setExternalId((Long) data.get("id"));
+        product.setExternalId(((Number) data.get("id")).longValue());
         product.setTitle((String) data.get("title"));
 
         // Construct Storefront URL using handle
@@ -176,6 +177,14 @@ public class ShopifyServiceImpl implements ShopifyService {
         String productUrl = String.format("https://%s/products/%s", shopDomain, handle);
         product.setUrl(productUrl);
 
+        // Extract image URL (first image in the images list if available)
+        List<Map<String, Object>> images = (List<Map<String, Object>>) data.get("images");
+        if (images != null && !images.isEmpty()) {
+            String imageUrl = (String) images.get(0).get("src");  // Get the first image's URL
+            product.setImageUrl(imageUrl);
+        }
+
         return product;
     }
+
 }
