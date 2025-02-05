@@ -1,6 +1,7 @@
 package com.poniansoft.shrtly.shortlink;
 
 import com.poniansoft.shrtly.click.ClickService;
+import com.poniansoft.shrtly.rateLimiter.RateLimiterService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShortLinkController {
     private final ShortLinkService shortLinkService;
     private final ClickService clickService;
+    private final RateLimiterService rateLimiterService;
 
-    public ShortLinkController(ShortLinkService shortLinkService, ClickService clickService) {
+    public ShortLinkController(ShortLinkService shortLinkService, ClickService clickService, RateLimiterService rateLimiterService) {
         this.shortLinkService = shortLinkService;
         this.clickService = clickService;
+        this.rateLimiterService = rateLimiterService;
     }
 
     // Short link redirect handler (e.g., https://shrtlnk.shop/abc123)
@@ -27,13 +30,20 @@ public class ShortLinkController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+        // Get IP address of the client
+        String ipAddress = request.getRemoteAddr();
+
+        // Check rate limit
+        if (!rateLimiterService.isAllowed(ipAddress)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();  // 429 Too Many Requests
+        }
+
         ShortLink shortLink = shortLinkService.findByShortCode(shortCode, shortLinkSlug);
         if (shortLink == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         // Track the click
-        String ipAddress = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String referrer = request.getHeader("Referer");
         clickService.trackClick(shortLink, ipAddress, userAgent, referrer);

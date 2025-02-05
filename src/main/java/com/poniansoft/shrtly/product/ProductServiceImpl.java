@@ -66,6 +66,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateStoreSlug(Long storeId, String slug) {
+        if (slug == null) {
+            throw new IllegalArgumentException("Slug cannot be null");
+        }
+
+        if (slug.equals("api")) {
+            throw new IllegalArgumentException("Slug cannot be 'api'");
+        }
         shortLinkRepository.updateSlugInStore(slug, storeId);
     }
 
@@ -77,6 +84,10 @@ public class ProductServiceImpl implements ProductService {
             return;
 
         if (slug != null) {
+            if (slug.equals("api")) {
+                throw new IllegalArgumentException("Slug cannot be 'api'");
+            }
+
             sl.setSlug(slug);
         }
 
