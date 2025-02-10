@@ -32,9 +32,13 @@ jobs:
           target: /home/root/spring-boot-app/shrtly-0.0.1-SNAPSHOT.jar
 
       - name: Restart Spring Boot using Docker Compose
-        run: ssh -i ${{ secrets.CONTABO_SSH_KEY }} root@${{ secrets.CONTABO_HOST }} << 'EOF'
-          cd /home/root/spring-boot-app
-          sudo docker-compose down
-          sudo docker-compose build
-          sudo docker-compose up -d
-        EOF
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CONTABO_HOST }}
+          username: ${{ secrets.CONTABO_USER }}
+          key: ${{ secrets.CONTABO_SSH_KEY }}
+          script: |
+            cd /home/root/spring-boot-app
+            sudo docker-compose down
+            sudo docker-compose build
+            sudo docker-compose up -d
