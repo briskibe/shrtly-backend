@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 @Table(name = "short_links", indexes = {
         @jakarta.persistence.Index(name = "idx_short_links_user_id", columnList = "user_id"),
         @jakarta.persistence.Index(name = "idx_short_links_product_id", columnList = "product_id")
+}, uniqueConstraints = {
+        @jakarta.persistence.UniqueConstraint(name = "uk_short_links_short_code_slug", columnNames = "short_code,slug"),
 })
 @Data
 @EntityListeners(AuditingEntityListener.class)

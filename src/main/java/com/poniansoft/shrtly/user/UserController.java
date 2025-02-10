@@ -40,4 +40,9 @@ public class UserController extends BaseController {
         User user = getCurrentUser(request);
         return userMapper.toUserModel(user);
     }
+
+    @GetMapping("/count")
+    public Long getUserCount() {
+        return userService.getUserCount();
+    }
 }

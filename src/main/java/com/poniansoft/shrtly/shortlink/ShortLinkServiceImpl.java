@@ -37,7 +37,8 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
     // Short Code Generator
     private String generateShortCode(Long productId) {
-        return Base62Util.encode(productId); // Converts ID to a short, readable string
+        String uniqueInput = productId + "-" + System.nanoTime();
+        return Base62Util.encode(uniqueInput.hashCode());
     }
 
     public ShortLink findByShortCode(String shortCode, String slug) {

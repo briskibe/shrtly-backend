@@ -11,7 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 @Component
@@ -21,6 +20,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDED_URLS = Arrays.asList(
             "/api/public/health",
             "/api/user/register",
+            "/api/user/count",
             "/api/shopify/auth",
             "/api/shopify/callback"
     );
