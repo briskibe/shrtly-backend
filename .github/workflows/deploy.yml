@@ -1,0 +1,40 @@
+name: Deploy Spring Boot App
+
+on:
+  push:
+    branches:
+      - master  # Run deployment on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build the project using Maven
+        run: mvn clean package -DskipTests
+
+      - name: Transfer JAR to VPS
+        uses: appleboy/scp-action@v0.1.0
+        with:
+          host: ${{ secrets.CONTABO_HOST }}
+          username: ${{ secrets.CONTABO_USER }}
+          key: ${{ secrets.CONTABO_SSH_KEY }}
+          source: target/shrtly-0.0.1-SNAPSHOT.jar
+          target: /home/root/spring-boot-app/shrtly-0.0.1-SNAPSHOT.jar
+
+      - name: Restart Spring Boot using Docker Compose
+        run: ssh -i ${{ secrets.CONTABO_SSH_KEY }} root@${{ secrets.CONTABO_HOST }} << 'EOF'
+          cd /home/root/spring-boot-app
+          sudo docker-compose down
+          sudo docker-compose build
+          sudo docker-compose up -d
+        EOF
