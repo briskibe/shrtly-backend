@@ -15,7 +15,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() throws IOException {
         InputStream serviceAccount = Objects.requireNonNull(
-                getClass().getClassLoader().getResourceAsStream("firebase_config123.json"),
+                getClass().getClassLoader().getResourceAsStream("firebase_config.json"),
                 "firebase_config.json not found!"
         );
 
