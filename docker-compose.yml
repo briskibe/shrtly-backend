@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  spring-boot-app:
+    build: .
+    container_name: spring-boot-app
+    ports:
+      - "8082:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5444/shrtlnk
+      DB_USERNAME: shrtlnk
+      DB_PASSWORD: cJBsWZqb7E_WDF99w8wr.
+      SHOPIFY_API_KEY: f1e249fa8b24b26c54945b9d7a9cd185
+      SHOPIFY_API_SECRET: 2bbf4e6e0edffc7346383ada7095605c
+      SHOPIFY_REDIRECT_URI: https://shrtlnk.shop/api/shopify/callback
+
+
+
+# Use OpenJDK as the base image
+FROM openjdk:17-jdk-slim
+  
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Spring Boot JAR into the container
+COPY shrtly-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose the application's port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
