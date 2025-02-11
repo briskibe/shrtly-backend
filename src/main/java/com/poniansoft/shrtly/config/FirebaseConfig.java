@@ -6,15 +6,18 @@ import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 @Configuration
 public class FirebaseConfig {
     @PostConstruct
     public void initialize() throws IOException {
-        FileInputStream serviceAccount =
-                new FileInputStream("src/main/resources/firebase_config.json");
+        InputStream serviceAccount = Objects.requireNonNull(
+                getClass().getClassLoader().getResourceAsStream("firebase_config.json"),
+                "firebase_config.json not found!"
+        );
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
