@@ -21,6 +21,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             "/api/public/health",
             "/api/user/register",
             "/api/user/count",
+            "/app/landing",
             "/api/shopify/auth",
             "/api/shopify/callback"
     );
