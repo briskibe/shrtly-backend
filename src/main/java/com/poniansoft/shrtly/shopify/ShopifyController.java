@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {"http://localhost:4200", "https://shrtlnk.shop"})
 @RequestMapping("/api/shopify")
 public class ShopifyController extends BaseController {
     private final ShopifyService shopifyService;

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {"http://localhost:4200", "https://shrtlnk.shop"})
 @RequestMapping("/api/store/{storeId}/products")
 public class ProductController extends BaseController {
     private final ProductService productService;
