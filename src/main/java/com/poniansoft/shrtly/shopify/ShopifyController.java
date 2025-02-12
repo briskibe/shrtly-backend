@@ -10,6 +10,7 @@ import com.poniansoft.shrtly.store.StoreService;
 import com.poniansoft.shrtly.user.User;
 import com.poniansoft.shrtly.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,9 @@ public class ShopifyController extends BaseController {
     private final StoreService storeService;
     private final ProductService productService;
     private final ShortLinkService shortLinkService;
+
+    @Value("${shopify.redirect-uri-after-install}")
+    private String shopifyRedirectUriAfterInstall;
 
     public ShopifyController(UserService userService, ShopifyService shopifyService, StoreService storeService, ProductService productService, ShortLinkService shortLinkService) {
         super(userService);
@@ -59,7 +63,7 @@ public class ShopifyController extends BaseController {
         Store store = storeService.addStore(accessToken, "shopify", shop.replace(".myshopify.com", ""), currentUser, shop);
 
         // Build redirect URI for the frontend
-        String redirectUrl = String.format("http://localhost:4200/shopify/auth");
+        String redirectUrl = shopifyRedirectUriAfterInstall;
         List<ShopifyProduct> shopifyProducts = shopifyService.fetchProducts(shop, accessToken, 5);
         List<Product> products = productService.createProductsFromShopify(shopifyProducts, store);
         shortLinkService.createShortLinksFromProducts(products, currentUser);
