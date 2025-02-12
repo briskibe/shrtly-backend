@@ -10,6 +10,8 @@ public class Base62Util {
             return "0";
         }
 
+        value = value < 0 ? Integer.toUnsignedLong((int) value) : value;
+
         StringBuilder sb = new StringBuilder();
         while (value > 0) {
             sb.append(BASE62_ALPHABET.charAt((int) (value % BASE)));
