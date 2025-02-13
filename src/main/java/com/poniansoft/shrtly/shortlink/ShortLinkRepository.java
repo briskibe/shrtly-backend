@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ShortLinkRepository extends JpaRepository<ShortLink, Long> {
-    ShortLink findByShortCodeAndSlug(String shortCode, String slug);
+    @Query("SELECT sl FROM ShortLink sl left join fetch sl.product p WHERE sl.shortCode = :shortCode AND sl.slug = :slug")
+    ShortLink findByShortCodeAndSlug(@Param("shortCode") String shortCode, @Param("slug") String slug);
 
     @Query("SELECT sl FROM ShortLink sl WHERE sl.product.id = :productId")
     ShortLink findByProductId(@Param("productId") Long productId);
