@@ -75,8 +75,6 @@ public class ShortLinkController {
                 <meta name="twitter:title" content="%s">
                 <meta name="twitter:description" content="Check out this product: %s">
                 <meta name="twitter:image" content="%s">
-                
-                <meta http-equiv="refresh" content="0;url=%s">
             </head>
             <body>
             Redirecting...
