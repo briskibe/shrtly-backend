@@ -17,14 +17,14 @@ public interface ClickRepository extends JpaRepository<Click, Long> {
 
     @Query("""
     SELECT new com.poniansoft.shrtly.analytics.model.ReferrerStats(
-        COALESCE(c.referrer, 'Direct Click'), COUNT(c.referrer))
+        COALESCE(c.referrer, 'Direct Click'), COUNT(*))
     FROM Click c
     JOIN c.shortLink sl
     JOIN sl.product p
     JOIN p.store s
     WHERE s.id = :storeId
     GROUP BY COALESCE(c.referrer, 'Direct Click')
-    ORDER BY COUNT(c.referrer) DESC
+    ORDER BY COUNT(*) DESC
 """)
     List<ReferrerStats> findReferrerStats(@Param("storeId") Long storeId);
 }
